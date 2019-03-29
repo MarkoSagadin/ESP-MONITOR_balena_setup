@@ -1,0 +1,50 @@
+version: '2'
+volumes:
+    node-red-data:
+    influxdb-data:
+    grafana-data:
+services:
+  influxdb:
+    build: influxdb
+    ports:
+      - "8082:8082"
+      - "8086:8086"
+      # UDP Port
+      - "8089:8089"
+    volumes:
+     - 'influxdb-data:/data'
+    restart: always
+  grafana:
+    build: grafana      
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb  
+    volumes:
+      - 'grafana-data:/data'
+    restart:
+      always
+  mqtt:
+    image: panuwitp/mosquitto-arm
+    ports:
+      - "1883:1883"  
+    restart: always
+  node-red:
+    build: node-red
+    volumes:
+       - 'node-red-data:/data'
+    ports:
+       - "1880:1880"
+    depends_on:
+        - mqtt
+    restart: always
+  nginx: 
+    build: nginx 
+    depends_on:
+      - node-red 
+      - grafana
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+ 
