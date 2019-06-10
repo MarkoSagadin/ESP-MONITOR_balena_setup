@@ -9,7 +9,6 @@ RUN npm install node-red-contrib-resinio
 RUN npm install node-red-dashboard
 RUN npm install node-red-contrib-credentials
 RUN npm install node-red-contrib-influxdb
-RUN npm install node-red-contrib-ttn
 
 COPY ./settings.js /data/settings.js
 
